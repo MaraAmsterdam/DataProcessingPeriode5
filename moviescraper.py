@@ -85,40 +85,48 @@ if __name__ == "__main__":
     # parse the HTML file into a DOM representation
     dom = BeautifulSoup(html, 'html.parser')
 
+     
+    actors = []
+    titles = []
         
-    '''for match in dom.find_all('div', class_ = 'lister-item-content'):
+    for match in dom.find_all('div', class_ = 'lister-item-content'):
         title = match.h3.a.text
+        titles.append(str(title))
         rating = match.h3.find('span', class_ = 'lister-item-index unbold text-primary').text
         year = match.h3.find('span', class_ = 'lister-item-year text-muted unbold').text
         print(match.find('p', class_ = '').a.text)
         runtime = match.p.find('span', class_ = 'runtime').text
-        #print(actors)
+        subset = match.find('p', class_ = '').select('a[href*="_st_"]')
+        for actor in subset:
+        	actors.append(actor.string.extract())
+
+  
         print(title)
         print(rating)
         print(year)
-        print(runtime)'''
+        print(runtime)
+        #print(actors)
+
+    print(titles)
+
+
+
+
 
 
     #print(dom.find('div', class_ = 'lister-item-content').prettify())
     soup = dom.find('div', class_ = 'lister-item-content')
 
 
-    print(soup.find('p', class_ = '').a)
-    
-
-
     #print(soup.find('p', class_ = '').a)
 
-    '''subset = soup.find('p', class_ = '').a
-    print(subset.txt)''' 
+    '''subset = soup.find('p', class_ = '').select('a[href*="_st_"]')
+    actors = []
+    for match in subset:
+    	actors.append(match.string.extract())
+    print(actors)'''
 
-
-
-
-
-
-   
-
+  
 
 
     # extract the movies (using the function you implemented)
