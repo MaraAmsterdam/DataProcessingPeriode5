@@ -10,6 +10,7 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
+import re
 
 TARGET_URL = "https://www.imdb.com/search/title?title_type=feature&release_date=2008-01-01,2018-01-01&num_votes=5000,&sort=user_rating,desc"
 BACKUP_HTML = 'movies.html'
@@ -26,13 +27,74 @@ def extract_movies(dom):
     - Actors/actresses (comma separated if more than one)
     - Runtime (only a number!)
     """
+    # Initiate movies and actors lists
+    movies = []
+    actors = []
+
+    # Iterate selected html lines 
+    for match in dom.find_all('div', class_ = 'lister-item-content'):
+        
+        title = str(match.h3.a.text)
+        # Search for numerals in title
+        #x = re.sub("^(I", "", title)
+        #print(x)
+
+        # Parse rating
+        rating = str(match.h3.find('span', class_ = 'lister-item-index unbold text-primary').text)
+        
+        year = str(match.h3.find('span', class_ = 'lister-item-year text-muted unbold').text)
+        
+        # Remove roman numerals
+        year = year.split("(")
+        year = " ".join(year)
+        year = year.split(")")
+        year = " ".join(year)
+        #print(year)
+
+
+        if "II   " in year:
+        	year = year.replace("II   ", "")
+        elif "I   " in year:
+        	year = year.replace("I   ", "")
+        print(year)
+
+        # Parse runtime
+        runtime = str(match.p.find('span', class_ = 'runtime').text)
+
+        subset = match.find('p', class_ = '').select('a[href*="_st_"]')
+
+        # Iterate subset and add to list
+        for actor in subset:
+        	actors.append(actor.string.extract())
+        # Join seperate strings into one
+        actors = ','.join(actors)
+
+        # Create dictionary for movie
+        movie_dict = {
+        			  "title" : title, 
+                      "rating" : rating, 
+                      "year" : int(year), 
+                      "runtime" : runtime,
+                      "actors" : actors
+        }
+
+        
+        # Append movie dict to movies list
+        movies.append(movie_dict)
+
+        # Clear actors list
+        actors = []
+
+  
+    #print(movies)
+    
 
     # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
     # HIGHEST RATED MOVIES
     # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
     # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
 
-    return []   # REPLACE THIS LINE AS WELL IF APPROPRIATE
+    return movies   # REPLACE THIS LINE AS WELL IF APPROPRIATE
 
 
 def save_csv(outfile, movies):
@@ -84,49 +146,6 @@ if __name__ == "__main__":
 
     # parse the HTML file into a DOM representation
     dom = BeautifulSoup(html, 'html.parser')
-
-     
-    actors = []
-    titles = []
-        
-    for match in dom.find_all('div', class_ = 'lister-item-content'):
-        title = match.h3.a.text
-        titles.append(str(title))
-        rating = match.h3.find('span', class_ = 'lister-item-index unbold text-primary').text
-        year = match.h3.find('span', class_ = 'lister-item-year text-muted unbold').text
-        print(match.find('p', class_ = '').a.text)
-        runtime = match.p.find('span', class_ = 'runtime').text
-        subset = match.find('p', class_ = '').select('a[href*="_st_"]')
-        for actor in subset:
-        	actors.append(actor.string.extract())
-
-  
-        print(title)
-        print(rating)
-        print(year)
-        print(runtime)
-        #print(actors)
-
-    print(titles)
-
-
-
-
-
-
-    #print(dom.find('div', class_ = 'lister-item-content').prettify())
-    soup = dom.find('div', class_ = 'lister-item-content')
-
-
-    #print(soup.find('p', class_ = '').a)
-
-    '''subset = soup.find('p', class_ = '').select('a[href*="_st_"]')
-    actors = []
-    for match in subset:
-    	actors.append(match.string.extract())
-    print(actors)'''
-
-  
 
 
     # extract the movies (using the function you implemented)
