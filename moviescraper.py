@@ -19,43 +19,33 @@ OUTPUT_CSV = 'movies.csv'
 
 def extract_movies(dom):
     """
-    Extract a list of highest rated movies from DOM (of IMDB page).
-    Each movie entry should contain the following fields:
-    - Title
-    - Rating
-    - Year of release (only a number!)
-    - Actors/actresses (comma separated if more than one)
-    - Runtime (only a number!)
+	Parse data into dictionaries and 
+	save dictionaries in list
     """
+
     # Initiate movies and actors lists
     movies = []
     actors = []
-
-    #print(dom.find('div', class_ = 'lister-item-content').prettify())
 
     # Iterate selected html lines 
     for match in dom.find_all('div', class_ = 'lister-item-content'):
         
         title = str(match.h3.a.text)
 
-        # Parse rating
         rating_ = match.find('div', class_ = 'inline-block ratings-imdb-rating')
         rating = float(rating_.strong.get_text())
-
         year_ = str(match.h3.find('span', class_ = 'lister-item-year text-muted unbold').text)
-        
         runtime_ = str(match.p.find('span', class_ = 'runtime').text)
 
         # join strings
         runtime_year = runtime_ + " " + year_
 
-        # Remove characters from ints 
+        # Remove characters from strings and convert to int
         runtime = int(re.findall(r'[0-9]+', runtime_year)[0])
         year = int(re.findall(r'[0-9]+', runtime_year)[1])
 
         # select subset of actors 
         subset = match.find('p', class_ = '').select('a[href*="_st_"]')
-
         # Iterate subset and add to list
         for actor in subset:
         	actors.append(actor.string.extract())
@@ -71,23 +61,13 @@ def extract_movies(dom):
                       "actors" : actors
         }
 
-        
         # Append movie dict to movies list
         movies.append(movie_dict)
 
         # Clear actors list
         actors = []
-
-  
-    print(movies[0])
     
-
-    # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
-    # HIGHEST RATED MOVIES
-    # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
-    # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
-
-    return movies   # REPLACE THIS LINE AS WELL IF APPROPRIATE
+    return movies  
 
 
 def save_csv(outfile, movies):
@@ -143,7 +123,20 @@ if __name__ == "__main__":
 
     # extract the movies (using the function you implemented)
     movies = extract_movies(dom)
+    
+    for movie in movies:	
+	    print(movie['title'])
+	    print(movie['rating'])
+	    print(movie['year'])
+	    print(movie['actors'])
+	    print(movie['runtime'])
 
-    # write the CSV file to disk (including a header)
+    # write the CSV file to disk
     with open(OUTPUT_CSV, 'w', newline='') as output_file:
-        save_csv(output_file, movies)
+    	fieldnames = ['title', 'rating', 'year', 'actors', 'runtime']
+    	writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+
+    	writer.writeheader()
+    	for data in movies:
+    		writer.writerow(data)
+	    	
