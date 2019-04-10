@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Name:
-# Student number:
+# Name: Mara Oosterbaan
+# Student number: 10549579
 """
 This script scrapes IMDB and outputs a CSV file with highest rated movies.
 """
@@ -77,9 +77,6 @@ def save_csv(outfile, movies):
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Year', 'Actors', 'Runtime'])
 
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE MOVIES TO DISK
-
-
 def simple_get(url):
     """
     Attempts to get the content at `url` by making an HTTP GET request.
@@ -121,7 +118,7 @@ if __name__ == "__main__":
     dom = BeautifulSoup(html, 'html.parser')
 
 
-    # extract the movies (using the function you implemented)
+    # extract movies
     movies = extract_movies(dom)
     
     # write the CSV file to disk
