@@ -7,7 +7,8 @@ This script visualizes data obtained from a .csv file
 
 import csv
 import matplotlib.pyplot as plt
-from statistics import mean 
+from statistics import mean
+from decimal import * 
 
 # Global constants for the input file, first and last year
 INPUT_CSV = "movies.csv"
@@ -17,13 +18,29 @@ END_YEAR = 2018
 # Global dictionary for the data
 data_dict = {str(key): [] for key in range(START_YEAR, END_YEAR)}
 
+
 if __name__ == "__main__":
 
-    with open('movies.csv', newline='') as input_file:
+	# Open csv file movies.csv
+    with open(INPUT_CSV, newline='') as input_file:
     	reader = csv.DictReader(input_file)
+    	# Iterate rows
     	for row in reader:
     		for key in data_dict:
+    			# Check if year of row matches year of data_dict key
     			if row['year'] == key:
+    				# Append rating to data_dict
     				data_dict[key].append(float(row['rating']))
 
-    
+    #print(data_dict)
+    #Replace ratings by mean rating per year
+    for key in data_dict:
+    	#print(round(mean(data_dict[key]),1))
+    	mean_ = round(mean(data_dict[key]),1)
+    	data_dict[key] = mean_
+    print(data_dict)
+
+
+    	
+ 
+
