@@ -32,15 +32,18 @@ if __name__ == "__main__":
     				# Append rating to data_dict
     				data_dict[key].append(float(row['rating']))
 
-    #print(data_dict)
     #Replace ratings by mean rating per year
     for key in data_dict:
-    	#print(round(mean(data_dict[key]),1))
     	mean_ = round(mean(data_dict[key]),1)
     	data_dict[key] = mean_
     print(data_dict)
 
-
+    plt.plot(data_dict.keys(), data_dict.values())
+    plt.ylim(0,10)
+    plt.title("Mean movie ratings per year")
+    plt.xlabel('Time in years')
+    plt.ylabel('Average rating')
+    plt.show()
     	
  
 
