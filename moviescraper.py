@@ -31,49 +31,42 @@ def extract_movies(dom):
     movies = []
     actors = []
 
+    #print(dom.find('div', class_ = 'lister-item-content').prettify())
+
     # Iterate selected html lines 
     for match in dom.find_all('div', class_ = 'lister-item-content'):
         
         title = str(match.h3.a.text)
-        # Search for numerals in title
-        #x = re.sub("^(I", "", title)
-        #print(x)
 
         # Parse rating
-        rating = str(match.h3.find('span', class_ = 'lister-item-index unbold text-primary').text)
+        rating_ = match.find('div', class_ = 'inline-block ratings-imdb-rating')
+        rating = float(rating_.strong.get_text())
+
+        year_ = str(match.h3.find('span', class_ = 'lister-item-year text-muted unbold').text)
         
-        year = str(match.h3.find('span', class_ = 'lister-item-year text-muted unbold').text)
-        
-        # Remove roman numerals
-        year = year.split("(")
-        year = " ".join(year)
-        year = year.split(")")
-        year = " ".join(year)
-        #print(year)
+        runtime_ = str(match.p.find('span', class_ = 'runtime').text)
 
+        # join strings
+        runtime_year = runtime_ + " " + year_
 
-        if "II   " in year:
-        	year = year.replace("II   ", "")
-        elif "I   " in year:
-        	year = year.replace("I   ", "")
-        print(year)
+        # Remove characters from ints 
+        runtime = int(re.findall(r'[0-9]+', runtime_year)[0])
+        year = int(re.findall(r'[0-9]+', runtime_year)[1])
 
-        # Parse runtime
-        runtime = str(match.p.find('span', class_ = 'runtime').text)
-
+        # select subset of actors 
         subset = match.find('p', class_ = '').select('a[href*="_st_"]')
 
         # Iterate subset and add to list
         for actor in subset:
         	actors.append(actor.string.extract())
         # Join seperate strings into one
-        actors = ','.join(actors)
+        actors = ', '.join(actors)
 
         # Create dictionary for movie
         movie_dict = {
         			  "title" : title, 
                       "rating" : rating, 
-                      "year" : int(year), 
+                      "year" : year, 
                       "runtime" : runtime,
                       "actors" : actors
         }
@@ -86,7 +79,7 @@ def extract_movies(dom):
         actors = []
 
   
-    #print(movies)
+    print(movies[0])
     
 
     # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
