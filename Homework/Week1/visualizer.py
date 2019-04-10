@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Name:
-# Student number:
+# Name: Mara Oosterbaan
+# Student number: 10549579
 """
 This script visualizes data obtained from a .csv file
 """
@@ -17,6 +17,24 @@ END_YEAR = 2018
 
 # Global dictionary for the data
 data_dict = {str(key): [] for key in range(START_YEAR, END_YEAR)}
+
+
+def plot(dict_):
+    '''
+    Plots data
+    '''
+
+    # Create plot from data
+    lines = plt.plot(dict_.keys(), dict_.values())
+    # specify line color and markers to emphasize the seperate data points
+    plt.setp(lines, color='b', marker='o')
+    # Adjust y-axis scale to correct for distorted auto scale
+    plt.ylim(0,10)
+    # Add main title and axes labels
+    plt.title('Average movie rating between 2008-2017')
+    plt.xlabel('Time in years')
+    plt.ylabel('Average rating (source: IMDB)')
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -36,14 +54,10 @@ if __name__ == "__main__":
     for key in data_dict:
     	mean_ = round(mean(data_dict[key]),1)
     	data_dict[key] = mean_
-    print(data_dict)
+    
+    #Plot data
+    plot(data_dict)
 
-    plt.plot(data_dict.keys(), data_dict.values())
-    plt.ylim(0,10)
-    plt.title("Mean movie ratings per year")
-    plt.xlabel('Time in years')
-    plt.ylabel('Average rating')
-    plt.show()
-    	
+
  
 
