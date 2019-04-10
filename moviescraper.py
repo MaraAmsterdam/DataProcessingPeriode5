@@ -124,13 +124,6 @@ if __name__ == "__main__":
     # extract the movies (using the function you implemented)
     movies = extract_movies(dom)
     
-    for movie in movies:	
-	    print(movie['title'])
-	    print(movie['rating'])
-	    print(movie['year'])
-	    print(movie['actors'])
-	    print(movie['runtime'])
-
     # write the CSV file to disk
     with open(OUTPUT_CSV, 'w', newline='') as output_file:
     	fieldnames = ['title', 'rating', 'year', 'actors', 'runtime']
