@@ -64,27 +64,39 @@ def central_tendacy(data):
 		'mode': mode_
 	}
 
-	hist_plot = data.hist(bins=15,  
-						  alpha=0.7,
-						  grid=False,
-						  color='red',
-						  ec='white')
-	hist_plot.set_title('GPD ($ per capita')
-	hist_plot.set_xlabel('GPD')
-	hist_plot.set_ylabel('Frequency')
+
+	ax = plt.subplot()
+	# Set histogram properties
+	ax.hist(x=data,
+			bins=15,  
+			alpha=0.7,
+			edgecolor='white',
+			color='red')
+
+	# Remove right and top axis
+	ax.spines['right'].set_visible(False)
+	ax.spines['top'].set_visible(False)
+
+	# Set titles and axes labels
+	ax.set_title('Distribution of worldwide GDP')
+	ax.set_xlabel('GDP ($ per capita)')
+	ax.set_ylabel('Frequency')
+
 	# The majority of GDP's is concentrated 
 	# below 10.000 $ per capita
 	# In other words this graph captures the 
 	# extreme unequal devision of wealth
 	plt.show()
 
+
 	for key in descriptives:
-		print(f'{key}: {descriptives[key]}')
+		print(f'{data.name} {key}: {descriptives[key]}')
 
 
 def five_num_sum(data):
 	'''
 	'''
+
 
 	# Calculate Minimum, First Quartile, Median, Third Quartile and Maximum
 	minimum = data.min()
@@ -101,8 +113,13 @@ def five_num_sum(data):
 		  f'Third Quartile = {third_q}\n'
 		  f'Maximum = {maximum}')
 
-	# Make boxplot
-	boxplot = data.plot.box()
+	data = [data]
+	#Make boxplot
+	fig1, ax1 = plt.subplots()
+	ax1.boxplot(data)#, vert=False)
+	ax1.set_ylabel('Deaths per 1000 births')
+	ax1.set_ylim(bottom=0,top=200)
+	#boxplot = data.plot.box()
 	plt.show()
 
 	return None
