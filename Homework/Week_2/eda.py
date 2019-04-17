@@ -19,13 +19,12 @@ def clean_data(df):
 	                 'Pop. Density (per sq. mi.)',
 	                 'Infant mortality (per 1000 births)',
 	                 'GDP ($ per capita) dollars']
-	              ]
+    ]
 
-	#Replace 'unknown' by NaN such that other data 
-	#will not be omited due to a single missing value             
+	# Replace 'unknown' by NaN such that other data 
+	# Will not be omited due to a single missing value             
 	df = df.replace(to_replace='unknown', value=np.nan)
- 
- 	      
+     
 	for col in df:
 		# Strip white spaces    
 		df[col] = df[col].str.strip()
@@ -34,7 +33,6 @@ def clean_data(df):
 			df[col] = df[col].str.strip(' dollars')
 			df[col] = df[col].replace(to_replace='400000', value=np.nan)
 			
-
 	for index, row in df.iterrows():	
 		# Replace ',' by '.' to facilitate dtype conversion
 		if type(row['Infant mortality (per 1000 births)']) is str:
@@ -43,10 +41,24 @@ def clean_data(df):
 			row['Pop. Density (per sq. mi.)'] = row['Pop. Density (per sq. mi.)'].replace(',','.')
 
 	# Convert str to float
-	df  = df.astype({'GDP ($ per capita) dollars':float,'Infant mortality (per 1000 births)':float, 'Pop. Density (per sq. mi.)': float})
+	df  = df.astype({
+		'GDP ($ per capita) dollars':float,
+		'Infant mortality (per 1000 births)':float,
+		'Pop. Density (per sq. mi.)': float
+	})
 	
 	return df
 
+def print_stats(stat_dict, data):
+	'''
+	Function to print stat values
+	from dictionary
+	'''
+
+	print(f'\n',
+	      f'Descriptives for {data.name}')
+	for key in stat_dict:
+		print(f'{key} = {stat_dict[key]}')
 
 def central_tendacy(data):
 	'''
@@ -54,49 +66,58 @@ def central_tendacy(data):
 	Plot histogram
 	'''
 
+	# Remove missing values
+	data = data.dropna()
+
 	mean_ = round(data.mean(),1)
 	median_ = round(data.median(),1)
 	mode_ = data.mode()[0]
 
-	descriptives = {
-		'mean': mean_,
-		'median': median_,
-		'mode': mode_
+	descriptives_ct = {
+	    'mean': mean_,
+	    'median': median_,
+	    'mode': mode_
 	}
 
+	# Print descriptives
+	print_stats(descriptives_ct, data)
 
+	# Initiate plot
 	ax = plt.subplot()
+
 	# Set histogram properties
-	ax.hist(x=data,
-			bins=15,  
-			alpha=0.7,
-			edgecolor='white',
-			color='red')
+	ax.hist(x=data,  
+	    alpha=0.7,
+	    edgecolor='white',
+	    color='red'
+    )
 
 	# Remove right and top axis
 	ax.spines['right'].set_visible(False)
 	ax.spines['top'].set_visible(False)
 
 	# Set titles and axes labels
-	ax.set_title('Distribution of worldwide GDP')
+	ax.set_title('Global distribution of GDP')
 	ax.set_xlabel('GDP ($ per capita)')
 	ax.set_ylabel('Frequency')
 
-	# The majority of GDP's is concentrated 
-	# below 10.000 $ per capita
-	# In other words this graph captures the 
-	# extreme unequal devision of wealth
+	'''
+	The majority of GDP's is concentrated 
+	below 10.000 $ per capita.
+	In other words this graph captures the 
+	extreme unequal devision of wealth
+	'''
+
 	plt.show()
-
-
-	for key in descriptives:
-		print(f'{data.name} {key}: {descriptives[key]}')
-
 
 def five_num_sum(data):
 	'''
+	Calculate set of statistics to explore data
+	Includes boxplot
 	'''
 
+	# Drop missing value to optimize data
+	data = data.dropna()
 
 	# Calculate Minimum, First Quartile, Median, Third Quartile and Maximum
 	minimum = data.min()
@@ -105,29 +126,27 @@ def five_num_sum(data):
 	maximum = data.max()
 	third_q = data.quantile(q=.75)
 
+	descriptives_fns = {
+	    'minumum': minimum,
+	    'First Quartile': first_q,
+	    'Median': median,
+	    'Third Quartile': third_q,
+	    'Maximum': maximum
+	}
 	# Print descriptives
-	print(f'Descrivtive statistics for {data.name}:\n'
-		  f'Minimum = {minimum}\n'
-		  f'First Quartile = {first_q}\n'
-		  f'Median = {median}\n'
-		  f'Third Quartile = {third_q}\n'
-		  f'Maximum = {maximum}')
+	print_stats(descriptives_fns, data)
 
-	data = [data]
-	#Make boxplot
-	fig1, ax1 = plt.subplots()
-	ax1.boxplot(data)#, vert=False)
-	ax1.set_ylabel('Deaths per 1000 births')
-	ax1.set_ylim(bottom=0,top=200)
-	#boxplot = data.plot.box()
+	# Create boxplot 
+	ax1 = data.plot.box()
+	ax1.set_ylabel('Infant deaths per 1000 births')
 	plt.show()
 
 	return None
 
-def WriteToJson(filename, path, data):
+def write_to_json(filename, path, data):
 
-	filePathNameWExt = './' + path + '/' + filename 
-	with open(filePathNameWExt, 'w') as fp:
+	file_path_name_ext = './' + path + '/' + filename 
+	with open(file_path_name_ext, 'w') as fp:
 		json.dump(data, fp)
  
 
@@ -142,7 +161,7 @@ if __name__ == "__main__":
 	# Calculate statistics for GDP
 	statistis = central_tendacy(df['GDP ($ per capita) dollars'])
 
-	# 
+	# Calculate Five Number Summary for infant mortality
 	five_num_sum(df['Infant mortality (per 1000 births)'])
 
 	# Change nan values to prepare for json conversion
@@ -151,12 +170,12 @@ if __name__ == "__main__":
 	# Convert dataframe to dict
 	df_dict = df.set_index('Country').to_dict('index')
 
-	# define path
+	# Define path
 	path = './'
-	fileName = 'data.json'
+	file_name = 'data.json'
 
-	#write json file
-	WriteToJson(fileName, path, df_dict)
+	# Write json file
+	write_to_json(file_name, path, df_dict)
 
 
 
