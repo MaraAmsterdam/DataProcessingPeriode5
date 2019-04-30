@@ -1,0 +1,112 @@
+{
+    "2007": {
+        "hotel type": "totaal",
+        "hotels": "351",
+        "kamers": 19400,
+        "bedden": 41743,
+        "gasten  (x 1.000)": 4864,
+        "overnachtingen  (x 1.000)": 8844,
+        "gemidd. bedbezetting (%)": 63,
+        "gemidd. verblijfsduur": 1.82
+    },
+    "2008": {
+        "hotel type": "totaal",
+        "hotels": "357",
+        "kamers": 19756,
+        "bedden": 43146,
+        "gasten  (x 1.000)": 4527,
+        "overnachtingen  (x 1.000)": 8310,
+        "gemidd. bedbezetting (%)": 59,
+        "gemidd. verblijfsduur": 1.84
+    },
+    "2009": {
+        "hotel type": "totaal",
+        "hotels": "369",
+        "kamers": 20932,
+        "bedden": 45914,
+        "gasten  (x 1.000)": 4628,
+        "overnachtingen  (x 1.000)": 8561,
+        "gemidd. bedbezetting (%)": 57,
+        "gemidd. verblijfsduur": 1.85
+    },
+    "2010": {
+        "hotel type": "totaal",
+        "hotels": "370",
+        "kamers": 21748,
+        "bedden": 47692,
+        "gasten  (x 1.000)": 5283,
+        "overnachtingen  (x 1.000)": 9725,
+        "gemidd. bedbezetting (%)": 61,
+        "gemidd. verblijfsduur": 1.84
+    },
+    "2011": {
+        "hotel type": "totaal",
+        "hotels": "375",
+        "kamers": 22169,
+        "bedden": 48365,
+        "gasten  (x 1.000)": 5321,
+        "overnachtingen  (x 1.000)": 9748,
+        "gemidd. bedbezetting (%)": 62,
+        "gemidd. verblijfsduur": 1.83
+    },
+    "2012": {
+        "hotel type": "totaal",
+        "hotels": "398",
+        "kamers": 24216,
+        "bedden": 52184,
+        "gasten  (x 1.000)": 5733,
+        "overnachtingen  (x 1.000)": 10581,
+        "gemidd. bedbezetting (%)": 59,
+        "gemidd. verblijfsduur": 1.85
+    },
+    "2013": {
+        "hotel type": "totaal",
+        "hotels": "413",
+        "kamers": 25372,
+        "bedden": 54857,
+        "gasten  (x 1.000)": 6024,
+        "overnachtingen  (x 1.000)": 11262,
+        "gemidd. bedbezetting (%)": 57,
+        "gemidd. verblijfsduur": 1.87
+    },
+    "2014": {
+        "hotel type": "totaal",
+        "hotels": "421",
+        "kamers": 26287,
+        "bedden": 56718,
+        "gasten  (x 1.000)": 6670,
+        "overnachtingen  (x 1.000)": 12538,
+        "gemidd. bedbezetting (%)": 60,
+        "gemidd. verblijfsduur": 1.88
+    },
+    "2015": {
+        "hotel type": "totaal",
+        "hotels": "436",
+        "kamers": 29092,
+        "bedden": 63665,
+        "gasten  (x 1.000)": 6826,
+        "overnachtingen  (x 1.000)": 12899,
+        "gemidd. bedbezetting (%)": 59,
+        "gemidd. verblijfsduur": 1.89
+    },
+    "2016": {
+        "hotel type": "totaal",
+        "hotels": "459",
+        "kamers": 30716,
+        "bedden": 67240,
+        "gasten  (x 1.000)": 7270,
+        "overnachtingen  (x 1.000)": 13983,
+        "gemidd. bedbezetting (%)": 59,
+        "gemidd. verblijfsduur": 1.92
+    },
+    "2017": {
+        "hotel type": "totaal",
+        "hotels": "479",
+        "kamers": 32602,
+        "bedden": 71879,
+        "gasten  (x 1.000)": 8260,
+        "overnachtingen  (x 1.000)": 15858,
+        "gemidd. bedbezetting (%)": 63,
+        "gemidd. verblijfsduur": 1.92
+    }
+}
