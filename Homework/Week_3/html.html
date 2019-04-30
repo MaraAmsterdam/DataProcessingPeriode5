@@ -28,8 +28,8 @@
 			var maxX = Math.max(...arrX);
 			     
 
-	        xScale = createTransform([minX,maxX], [0,800]);
-	        yScale = createTransform([0,maxY],[800,0]);
+	        xScale = createTransform([minX,maxX], [10,790]);
+	        yScale = createTransform([0,maxY],[790,10]);
 
 
 	        function createTransform(domain, range){
@@ -65,8 +65,8 @@
 		    if (canvas.getContext){
 		    	var context = canvas.getContext('2d');
 		    	// reset
-		    	context.beginPath();
 		    	var middle = 200;
+		    	context.beginPath();
 		    	// Starting point
 		    	context.moveTo(middle,yScale(data[2007]));
 		    	
@@ -74,9 +74,36 @@
 				context.lineTo(xScale(key)+middle,yScale(data[key]));
 				context.stroke();
 				}
-				context.strokeRect(middle,0,800,400);
+				context.closePath();
+
+				context.beginPath();
+				context.moveTo(middle,400);
+				context.lineTo(maxX,400);
 				context.stroke();
-				context.closePath();	
+				context.closePath();
+
+				context.beginPath();
+				context.moveTo(middle,400);
+				context.lineTo(middle,0);
+				context.stroke();
+				context.closePath();
+
+				for (var key in data){
+				context.beginPath();
+				context.moveTo(xScale(key)+middle,400);
+				context.lineTo(xScale(key)+middle,415);
+				context.stroke();
+				context.closePath();
+
+				context.beginPath();
+				context.moveTo(middle,400);
+				context.lineTo(middle,385);
+				context.stroke();
+				context.closePath();
+				}
+				
+
+
 
 		    }
 
