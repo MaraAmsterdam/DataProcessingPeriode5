@@ -6,31 +6,23 @@
 <body>
 	<canvas id="canvas" width="800" height="800"></canvas>
 	<script type="text/javascript">
-    function createTransform(domain, range){
-    /*
-    Function to calculate linear
-    transformation for axes*/
-
-    var domain_min = domain[0]
-    var domain_max = domain[1]
-    var range_min = range[0]
-    var range_max = range[1]
-
-    // Calculate the alpha and the beta
-   	var alpha = (range_max - range_min) / (domain_max - domain_min)
-    var beta = range_max - alpha * domain_max
-
-    return function(x){
-      return alpha * x + beta;
-    }
-	}
-
-	function(drawGraph)(data){
-		
-	}
-
     var fileName = "data.json";
     var txtFile = new XMLHttpRequest();
+
+        function createTransform(domain, range){
+
+	    var domain_min = domain[0]
+	    var domain_max = domain[1]
+	    var range_min = range[0]
+	    var range_max = range[1]
+
+	   	var alpha = (range_max - range_min) / (domain_max - domain_min)
+	    var beta = range_max - alpha * domain_max
+
+	    return function(x){
+	      return alpha * x + beta;
+	    }	    
+	}
 
     txtFile.onreadystatechange = function() {
 	    if (txtFile.readyState === 4 && txtFile.status == 200) {
@@ -52,10 +44,15 @@
 	        var minX = Math.min(...arrX);
 			var maxX = Math.max(...arrX);
 			     
-
+			// Calculate lineair transformation for both axes
 	        xScale = createTransform([minX,maxX], [10,500]);
 	        yScale = createTransform([0,maxY],[700,20]);
 	        
+
+			/*for (var key in data){
+				console.log(xScale(key),yScale(data[key]));
+			}*/
+			
 
 		    var canvas = document.getElementById('canvas');
 		    // Check
@@ -119,9 +116,9 @@
 				
 		    }
 
-
 	    }
     }
+    
     txtFile.open("GET", fileName);
     txtFile.send();
 	</script>
