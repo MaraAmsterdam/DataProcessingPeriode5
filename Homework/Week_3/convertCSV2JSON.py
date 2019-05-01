@@ -1,3 +1,7 @@
+'''
+Author: Mara Oosterbaan
+Assigment: JSON converter
+'''
 import csv
 import pandas as pd
 import json
