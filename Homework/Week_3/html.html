@@ -4,8 +4,9 @@
 	<title> Line graph </title>
 </head>
 <body>
-	<canvas id="canvas" width="800" height="800"></canvas>
-	<script type="text/javascript">
+	<a href='https://data.amsterdam.nl/datasets/-Ja51qSD_owMzg/'>Link to dataset</a>
+	<canvas id='canvas' width='800' height='800'></canvas>
+	<script type='text/javascript'>
     function createTransform(domain, range){
     /*
     Function to calculate linear
@@ -25,104 +26,112 @@
     }
 	}
 
-	function(drawGraph)(data){
-		
+	function selectData(data_raw, colname){
+	var data = {};
+  
+    for (var key in data_raw) {
+    	data[key] = data_raw[key][colname];
+    }
+    return data;
 	}
 
-    var fileName = "data.json";
-    var txtFile = new XMLHttpRequest();
+	function drawGraph(data){
+	/* Function to draw graph*/
 
+    // Find maximum y-value
+    var arrY = Object.values(data);
+    var maxY = Math.max(...arrY);
+
+    //Find maximum and minimum x-values
+    var arrX = Object.keys(data);
+    var minX = Math.min(...arrX);
+	var maxX = Math.max(...arrX);
+
+	// Create scales     
+    xScale = createTransform([minX,maxX], [10,500]);
+    yScale = createTransform([0,maxY],[700,20]);
+
+    var canvas = document.getElementById('canvas');
+    var canvasY = document.getElementById('ylabel');
+    // Check for canvas support
+    if (canvas.getContext){
+    	var ctx = canvas.getContext('2d');
+    	var middle = 160;
+
+    	// Draw graph
+    	ctx.beginPath();
+    	ctx.font = '25px Arial';
+		ctx.fillText('Beds available for tourists in Amsterdam', 190, 70);
+		ctx.fillText('2007 - 2017', 350, 100);
+    	ctx.moveTo(middle,yScale(data[2007]) + middle);	
+    	for (var key in data){
+		ctx.lineTo(xScale(key) + middle,yScale(data[key]) + middle);
+		ctx.stroke();
+		}
+		ctx.closePath();
+
+		// Draw x-axis
+		ctx.beginPath();
+		ctx.moveTo(middle,400 + middle);
+		ctx.lineTo(middle + xScale(2017),400 + middle);
+		ctx.stroke();
+		ctx.closePath();
+
+		// Draw x-ticks
+		for (var key in data){
+		ctx.beginPath();
+		ctx.moveTo(xScale(key) + middle,400 + middle);
+		ctx.lineTo(xScale(key) + middle,415 + middle);
+		ctx.stroke();
+		ctx.font = '10px Arial';
+		ctx.fillText(key, xScale(key) + 140, 600);
+		ctx.closePath();
+		}
+
+		// Draw x-label
+		ctx.beginPath();
+		ctx.font = '15px Arial';
+		ctx.fillText('Time in years (source Gemeente Amsterdam)', 250, 630);
+		ctx.closePath();
+
+		// Draw y-axis
+		ctx.beginPath();
+		ctx.moveTo(middle,400 + middle);
+		ctx.lineTo(middle,yScale(80000) + middle);
+		ctx.stroke();
+		ctx.closePath();
+
+		// Draw y-ticks 
+		for (i = 0; i < 7; i++){	
+		var factor = ( 80000 / 10 ) * i;	
+		var factorTicks = 80000 - factor;		
+		ctx.beginPath();
+		ctx.moveTo(middle,yScale(80000 - factor) + middle);
+		ctx.lineTo(middle - 15,yScale(80000 - factor) + middle);
+		ctx.stroke();
+		ctx.font = '10px Arial';
+		ctx.fillText(factorTicks, 110, yScale(80000 - factor) + middle );
+		ctx.closePath();
+		}
+
+		// Draw y-label
+		ctx.beginPath();
+		ctx.font = '15px Arial';
+		ctx.fillText('Beds', 50, 350);
+		ctx.closePath();
+    }
+	}
+
+    var fileName = 'data.json';
+    var txtFile = new XMLHttpRequest();
     txtFile.onreadystatechange = function() {
 	    if (txtFile.readyState === 4 && txtFile.status == 200) {
-	        // console.log(JSON.parse(txtFile.responseText));
 	        var data_raw = JSON.parse(txtFile.responseText)
-	        var data = {};
-	      
-	        for (var key in data_raw) {
-		    	data[key] = data_raw[key]['bedden'];
-	        }
-
-	        // Find maximum y-value
-	        var arrY = Object.values(data);
-	        var maxY = Math.max(...arrY);
-
-
-	        //Find maximum and minimum x-values
-	        var arrX = Object.keys(data);
-	        var minX = Math.min(...arrX);
-			var maxX = Math.max(...arrX);
-			     
-
-	        xScale = createTransform([minX,maxX], [10,500]);
-	        yScale = createTransform([0,maxY],[700,20]);
-	        
-
-		    var canvas = document.getElementById('canvas');
-		    // Check
-		    if (canvas.getContext){
-		    	var context = canvas.getContext('2d');
-		    	// reset
-		    	var middle = 160;
-		    	context.beginPath();
-		    	context.font = '30px Arial';
-				context.fillText('Hello world', 200, 70);
-				context.fillText('bron', 200,700);
-		    	// Starting point
-		    	context.moveTo(middle,yScale(data[2007]) + middle);
-		    	
-		    	for (var key in data){
-				context.lineTo(xScale(key) + middle,yScale(data[key]) + middle);
-				context.stroke();
-				}
-				context.closePath();
-				// Draw x-axis
-				context.beginPath();
-				context.moveTo(middle,400 + middle);
-				context.lineTo(middle + xScale(2017),400 + middle);
-				context.stroke();
-				context.closePath();
-
-				// Draw y-axis
-				context.beginPath();
-				context.moveTo(middle,400 + middle);
-				context.lineTo(middle,yScale(80000) + middle);
-				context.stroke();
-				context.closePath();
-
-				// Draw x-ticks
-				for (var key in data){
-				context.beginPath();
-				context.moveTo(xScale(key) + middle,400 + middle);
-				context.lineTo(xScale(key) + middle,415 + middle);
-				context.stroke();
-				context.closePath();
-				}
-
-
-				// Draw y ticks 
-				for (i = 0; i < 7; i++){	
-				var factor = ( 80000 / 10 ) * i;	
-				var factorTicks = 80000 - factor;
-				//console.log(factor);		
-				context.beginPath();
-
-				context.moveTo(middle,yScale(80000 - factor) + middle);
-				context.lineTo(middle - 15,yScale(80000 - factor) + middle);
-				context.stroke();
-
-				context.font = '10px Arial';
-				context.fillText(factorTicks, 110, yScale(80000 - factor) + middle );
-
-				context.closePath();
-				}
-
-				
-		    }
-
-
+	        var data = selectData(data_raw, 'bedden');
+	        drawGraph(data);
 	    }
     }
-    txtFile.open("GET", fileName);
+    txtFile.open('GET', fileName);
     txtFile.send();
 	</script>
 </body>
