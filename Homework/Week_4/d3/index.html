@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>D3 test</title>
+	<script type="text/javascript" src="d3.js"></script>
+	<style type="text/css">
+		.aligned {
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		d3.select("head")	
+			.select("title")
+			.text("Barchart");
+	</script>
+	<script type="text/javascript">
+		var body = d3.select("body");
+		var w = 500;
+		var h = 100;
+		var wb = 25;
+
+		d3.json("/burnoutData.json").then(function(data) {
+			var dataset = Object.values(data);
+			console.log(dataset);
+
+			var svg = body.append("svg")
+			              .attr("width", w)
+			              .attr("height", h);
+
+			svg.selectAll("rect")
+          	  .data(Object.keys(dataset))
+              .enter()
+              .append("rect")
+			  .attr("x", function(d,i){
+			         return (i * 30) + 10;
+			  })
+	         .attr("y", function(d) {
+	             y_check =  h - (dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 4);
+	             console.log("y = " + y_check);
+	             return y_check;
+	         })
+	         .attr("width", wb)
+	         .attr("height", function(d,i){
+	         	var height_check = dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 4;
+	         	console.log(height_check);
+	         	return height_check;
+	         });
+			  /*      	
+			  body.selectAll(".newP")
+    	  	  .data(Object.keys(dataset))
+    	  	  .enter()
+    	  	  .append("p")
+    	  	  .attr("class", "newP")
+    	  	  .text(function(d, i){
+    	  	  	return dataset[d]["Burn-out klachten/Burn-out klachten (%)"];
+    	  	  })
+    	  	  .style("color", "red");	
+    	  	  console.log(dataset);*/
+		});		
+		body
+		  .append("title")
+		  .text("barchart title");
+		body
+		  .append("h1")
+		  .attr("class","aligned")
+		  .text("Week 4")
+		  .style("text-align", "center");
+		body
+		  .append("h2")
+		  .attr("class", "aligned")
+		  .text("Barchart assignment");		  
+		body
+		  .append("p")
+		  .text("Name: EX Oosterbaan")
+		  .style("color", "blue");		  
+		body
+		  .append("p")
+		  .text("Studentnr: 10549579");			
+		body
+		  .append("p")
+		  .text("The data was aquired via cbs.nl and constitutes of health data of the Dutch working population");
+		  body
+		    .append("h2")
+		    .attr("class", "aligned")
+		    .text("Graph");
+	</script>
+</body>
+</html>
