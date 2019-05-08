@@ -4,9 +4,20 @@
 	<meta charset="utf-8">
 	<title>D3 test</title>
 	<script type="text/javascript" src="d3.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 	<style type="text/css">
+		
 		.aligned {
 			text-align: center;
+		}
+
+		.d3-tip {
+		  line-height: 1;
+		  font-weight: bold;
+		  padding: 12px;
+		  background: rgba(0, 0, 0, 0.8);
+		  color: #fff;
+		  border-radius: 2px;
 		}
 	</style>
 </head>
@@ -18,54 +29,84 @@
 	</script>
 	<script type="text/javascript">
 		var body = d3.select("body");
-		var w = 500;
-		var h = 100;
-		var wb = 25;
 
 		d3.json("/burnoutData.json").then(function(data) {
-			var dataset = Object.values(data);
-			console.log(dataset);
+			
 
+			// Set SVG and graph properties
+			var dataset = data;
+			var keys = Object.keys(dataset);
+			var lengthData = keys.length;
+			var margin = {top: 20, right: 20, bottom: 70, left: 40};
+			var w = 600;
+			var h = 400;
+			var wb = 25;	
+			var padding = 100;
+					
+			// Create SVG
 			var svg = body.append("svg")
-			              .attr("width", w)
-			              .attr("height", h);
+						    .attr("width", w)
+						    .attr("height", h)
+						  .append("g")
+						    .attr("transform",
+						    	 "translate(" + margin.left + "," + margin.top + ")");		
+			
 
+			// Set scales
+			var xScale = d3.scaleOrdinal()
+						     .domain(keys)
+						     .range([300,340,380,420,460,500]);
+			var yScale = d3.scaleLinear()
+						     .domain([0,100])
+						     .range([0,h]);
+
+			// Create bar graph
 			svg.selectAll("rect")
-          	  .data(Object.keys(dataset))
-              .enter()
-              .append("rect")
-			  .attr("x", function(d,i){
-			         return (i * 30) + 10;
-			  })
-	         .attr("y", function(d) {
-	             y_check =  h - (dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 4);
-	             console.log("y = " + y_check);
-	             return y_check;
-	         })
-	         .attr("width", wb)
-	         .attr("height", function(d,i){
-	         	var height_check = dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 4;
-	         	console.log(height_check);
-	         	return height_check;
-	         });
-			  /*      	
-			  body.selectAll(".newP")
-    	  	  .data(Object.keys(dataset))
-    	  	  .enter()
-    	  	  .append("p")
-    	  	  .attr("class", "newP")
-    	  	  .text(function(d, i){
-    	  	  	return dataset[d]["Burn-out klachten/Burn-out klachten (%)"];
-    	  	  })
-    	  	  .style("color", "red");	
-    	  	  console.log(dataset);*/
+			   .data(keys)
+			   .enter()
+			   .append("rect")
+			     .attr("x", function(d){
+			       return xScale(d);
+			     })
+			     .attr("y", function(d) {
+			       //return h - (dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 10);
+			       return yScale(dataset[d]["Burn-out klachten/Burn-out klachten (%)"]);
+			     })
+			     .attr("width", wb)
+			     .attr("height", function(d,i){
+			       //return dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 10;
+			       return h - yScale(dataset[d]["Burn-out klachten/Burn-out klachten (%)"]);
+			     })
+			     .attr("fill", function(d){
+			   	   return "rgb(" + dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 10 + ",0,0)";
+			     })
+
+			svg.append("g")
+			     .attr("class", "x-axis")
+			     .attr("transform", "translate(0," + (h - margin.top - margin.bottom) + ")")
+			     .call(d3.axisBottom(xScale));
+			svg.append("g")
+			     .attr("class", "y-axis")
+			     .attr("transform", "translate(" + 280 + ",0)")
+			     .call(d3.axisLeft(yScale));
+
+			var tip = d3.tip()
+			   .attr("class", "d3-tip")
+			   .offset([-10,0])
+			   .html(function(d) { "<strong>Percentage:</strong> <span style='color:red'>" + dataset[d]["Burn-out klachten/Burn-out klachten (%)"] + "</span>";
+			   });
+
+			svg.call(tip);
 		});		
+
+
+		// Set lay-out html page
 		body
 		  .append("title")
-		  .text("barchart title");
+		  .text("barchart");
 		body
 		  .append("h1")
-		  .attr("class","aligned")
+		  .attr("class", "aligned")
 		  .text("Week 4")
 		  .style("text-align", "center");
 		body
