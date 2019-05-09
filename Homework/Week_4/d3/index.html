@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- 
+	Author: Mara Oosterbaan
+	Assignment: Bar chart
+	-->
 	<meta charset="utf-8">
 	<title>D3 test</title>
 	<script type="text/javascript" src="d3.js"></script>
-	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+	<script src="tip.js"></script>
 	<style type="text/css">
 		
 		.aligned {
 			text-align: center;
-		}
-
-		.d3-tip {
-		  line-height: 1;
-		  font-weight: bold;
-		  padding: 12px;
-		  background: rgba(0, 0, 0, 0.8);
-		  color: #fff;
-		  border-radius: 2px;
 		}
 	</style>
 </head>
@@ -37,19 +32,15 @@
 			var dataset = data;
 			var keys = Object.keys(dataset);
 			var lengthData = keys.length;
-			var margin = {top: 20, right: 20, bottom: 70, left: 40};
-			var w = 600;
-			var h = 400;
+			var width = 600;
+			var height = 400;
 			var wb = 25;	
 			var padding = 100;
 					
 			// Create SVG
 			var svg = body.append("svg")
-						    .attr("width", w)
-						    .attr("height", h)
-						  .append("g")
-						    .attr("transform",
-						    	 "translate(" + margin.left + "," + margin.top + ")");		
+						    .attr("width", width)
+						    .attr("height", height);
 			
 
 			// Set scales
@@ -58,7 +49,11 @@
 						     .range([300,340,380,420,460,500]);
 			var yScale = d3.scaleLinear()
 						     .domain([0,100])
-						     .range([0,h]);
+						     .range([height, 0]);
+
+			for (var i = 0; i < lengthData; i++){
+				console.log(yScale(dataset[keys[i]]["Burn-out klachten/Burn-out klachten (%)"]));
+			}
 
 			// Create bar graph
 			svg.selectAll("rect")
@@ -75,29 +70,31 @@
 			     .attr("width", wb)
 			     .attr("height", function(d,i){
 			       //return dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 10;
-			       return h - yScale(dataset[d]["Burn-out klachten/Burn-out klachten (%)"]);
+			       return height - yScale(dataset[d]["Burn-out klachten/Burn-out klachten (%)"]);
 			     })
 			     .attr("fill", function(d){
 			   	   return "rgb(" + dataset[d]["Burn-out klachten/Burn-out klachten (%)"] * 10 + ",0,0)";
 			     })
 
+			// Add axes 
 			svg.append("g")
 			     .attr("class", "x-axis")
-			     .attr("transform", "translate(0," + (h - margin.top - margin.bottom) + ")")
+			     .attr("transform", "translate(0," + height + ")")
 			     .call(d3.axisBottom(xScale));
+
 			svg.append("g")
 			     .attr("class", "y-axis")
 			     .attr("transform", "translate(" + 280 + ",0)")
 			     .call(d3.axisLeft(yScale));
 
-			var tip = d3.tip()
-			   .attr("class", "d3-tip")
-			   .offset([-10,0])
-			   .html(function(d) { "<strong>Percentage:</strong> <span style='color:red'>" + dataset[d]["Burn-out klachten/Burn-out klachten (%)"] + "</span>";
-			   });
-
-			svg.call(tip);
 		});		
+
+		var tip = d3.tip()
+					  .attr('class', 'd3-tip')
+					  .offset([-10, 0])
+					  .html(function(d) {
+					    return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+					  })
 
 
 		// Set lay-out html page
@@ -115,8 +112,7 @@
 		  .text("Barchart assignment");		  
 		body
 		  .append("p")
-		  .text("Name: EX Oosterbaan")
-		  .style("color", "blue");		  
+		  .text("Name: EX Oosterbaan")		  
 		body
 		  .append("p")
 		  .text("Studentnr: 10549579");			
