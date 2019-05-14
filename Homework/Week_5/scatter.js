@@ -21,11 +21,7 @@ function selectData(data, keys, years){
 					  "2015" : []
 	};
 	var countries = [];
-	//console.log(data);
 
-
-
-	//console.log(data.dataViolent.hasOwnProperty("Australia"));
 	
 	for (var y = 0; y < years.length; y++){
 
@@ -58,14 +54,15 @@ function selectData(data, keys, years){
 	}
 
 
-	console.log(countries);
 
 	for (y = 0; y < years.length; y++){
 		for (var k = 0; k < dataStruct[years[y]].length; k++){
-			// console.log(data.dataViolent.hasOwnProperty(dataStruct["2012"][k]["country"]))
+			
+			// Select countries which have datapoints for all three sets 
 			if (data.dataViolent.hasOwnProperty(dataStruct[years[y]][k]["country"]) && data.dataPregnancies.hasOwnProperty(dataStruct[years[y]][k]["country"])){
 				countries.push(dataStruct[years[y]][k]["country"]);
 			}
+			// Remove countries from dataStruct which don't have all three datapoints
 			else {
 				dataStruct[years[y]].splice(k, 1);
 				//splice method moves all indices the value of k
@@ -74,9 +71,6 @@ function selectData(data, keys, years){
 			}
 		}
 	}
-
-	console.log(dataStruct);
-
 
 	
 	for (var y = 0; y < years.length; y++){
@@ -126,9 +120,59 @@ function selectData(data, keys, years){
 		}
 	}	
 
-	console.log(dataStruct);
-
 	return dataStruct;		 
+}
+
+function createDataPointList(data){
+/*
+	Create lst[[x,y],
+			   [x,y]
+			   ...
+			]
+*/
+	lst = []
+	var k = Object.keys(data);
+
+
+	for (var i = 0; i < k.length; i++){
+		lstSub = [];
+		for (var j = 0; j < data[k[i]].length; j++){
+			var x = data[k[i]][j]["datapointdataPregnancies"];	
+			var y = data[k[i]][j]["datapointdataGDP"];
+			//var z = data[k[i]][j]["datapointdataViolent"];
+			lstSub.push([x,y]);
+		}
+		lst.push(lstSub);
+	}
+	return lst;
+}
+function createScatterplot(lst){
+
+	var data = lst;
+	console.log(data);
+	// Create margins
+	var margin = {top: 25, right: 25, bottom: 35, left: 45},
+		width = 600 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+
+	//Create SVG element
+	var svg = d3.select("body")
+            	 .append("svg")
+            	 .attr("width", width)
+            	 .attr("height", height);
+
+	svg.selectAll("circle")
+	    .data(data)
+	    .enter()
+	    .append("circle")
+	    .attr("cx", function(d) {
+	         return (d[0] * 10) + (width / 2);
+	    })
+	    .attr("cy", function(d) {
+	         return (d[1] / 1000) * 3;
+	    })
+	    .attr("r", 3);
+
 }
 
 Promise.all(requests).then(function(response) {
@@ -142,7 +186,8 @@ Promise.all(requests).then(function(response) {
     };
  	var keys = Object.keys(dataScatterplot);
  	var selectedData = selectData(dataScatterplot, keys, ["2012","2013","2014","2015"]);
- 	//console.log(selectedData);
+ 	var lst = createDataPointList(selectedData);
+ 	createScatterplot(lst[0]);
  	//console.log(selectedData["2012"][0].Australia.hasOwnProperty("datapointdataPregnancies"));
  
 }).catch(function(e){
