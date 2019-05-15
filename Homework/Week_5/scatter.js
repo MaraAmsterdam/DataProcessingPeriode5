@@ -124,121 +124,139 @@ return dataStruct;
 }
 
 function createDataPointList(data){
-/*
-Create lst[[x,y],
-		   [x,y]
-		   ...
-		]
-*/
-lst = []
-var k = Object.keys(data);
+	/*
+	Create lst[[x,y],
+			   [x,y]
+			   ...
+			]
+	*/
+	lst = []
+	var k = Object.keys(data);
 
 
-for (var i = 0; i < k.length; i++){
-	lstSub = [];
-	for (var j = 0; j < data[k[i]].length; j++){
-		var x = data[k[i]][j]["datapointdataPregnancies"];	
-		var y = data[k[i]][j]["datapointdataGDP"];
-		//var z = data[k[i]][j]["datapointdataViolent"];
-		lstSub.push([x,y]);
+
+	for (var i = 0; i < k.length; i++){
+		lstSub = [];
+		for (var j = 0; j < data[k[i]].length; j++){
+			var x = data[k[i]][j]["datapointdataPregnancies"];	
+			var y = data[k[i]][j]["datapointdataGDP"];
+			var z = data[k[i]][j]["datapointdataViolent"];
+			lstSub.push([x,y,z]);
+		}
+		lst.push(lstSub);
 	}
-	lst.push(lstSub);
-}
-return lst;
-}
+	return lst;
+	}
 function createScatterplot(lst){
 
-var data = lst;
-// Create margins
-var margin = {top: 30, right: 20, bottom: 30, left: 40},
-	width = 960 - margin.left - margin.right,
-	height = 500 - margin.top - margin.bottom;
+	var dataAll = lst;
+	var data = lst[0]
+	// Create margins
+	var margin = {top: 30, right: 20, bottom: 30, left: 40},
+		width = 960 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
 
-// Setup X 
-var xValue = function(d){ return d[0];},
-	xScale = d3.scaleLinear().range([margin.left, width]),
-	xMap = function(d) { return xScale(xValue(d)); },
-	xAxis = d3.axisBottom(xScale);
-
-
-// Setup y
-var yValue = function(d) { return d[1];},
-	yScale = d3.scaleLinear().range([height, 0]),
-	yMap = function(d) { return yScale(yValue(d)) ;},
-	yAxis = d3.axisLeft(yScale);
-
-// change string (from CSV) into number format
-data.forEach(function(d) {
-    /*d[0] = +d[0];
-    d[1] = +d[1];*/
-    console.log(d3.max(data,xValue))
-    console.log(yMap(d));
- });
-
-// 
-xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+	// Setup X 
+	var xValue = function(d) {return d[0];},
+		xScale = d3.scaleLinear().range([0, width]),
+		xMap = function(d) {return xScale(xValue(d)); },
+		xAxis = d3.axisBottom(xScale);
 
 
-// Create SVG element
-var svg = d3.select("body")
-			 .append("svg")
-			 .attr("width", width + margin.left + margin.right)
-			 .attr("height", height + margin.top + margin.bottom)
-			.append("g")
-			 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	// Setup y
+	var yValue = function(d) {return d[1];},
+		yScale = d3.scaleLinear().range([420, 0]),
+		yMap = function(d) {return yScale(yValue(d)) ;},
+		yAxis = d3.axisLeft(yScale);
 
-// X-axis
-svg.append("g")
-	.attr("class", "x axis")
-	.attr("transform", "translate(" + margin.right + "," + height + ")")
-	.call(xAxis)
-   .append("text")
-   .attr("class", "label")
-   .attr("x", width)
-   .attr("y", -6)
-   .style("text-anchor", "end")
-   .text("Teen pregnancies");
+	// Setup z-scale
+	var zValue = function(d) {return d[2];};
+	var myColor = d3.scaleLinear().domain([0,15])
+	      .range(["white","red"]);
 
-// Y axis
-svg.append("g")
-	.attr("class", "y axis")
-	.call(yAxis)
-   .append("text")
-    .attr("class", "label")
-    .attr("transform",  "rotate(-90)")
-    .attr("y", 6)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
-    .text("GDP")
+	// Set domain of x and y axis
+	xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+	yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
-// Draw dots
-svg.selectAll("circle")
-	.data(data)
-	.enter()
-	.append("circle")
-	.attr("cx", xMap)
-	.attr("cy", yMap)
-	.attr("r", 3.5);
+	// Create SVG element
+	var svg = d3.select("body")
+				 .append("svg")
+				 .attr("width", width + margin.left + margin.right)
+				 .attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	// X-axis
+	svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis)
+
+	svg.append("text")
+	   .attr("text-anchor", "end")
+	   .attr("x", width)
+	   .attr("y", height + 25)
+	   .text("Teen pregnancies")
+	   .attr("fontsize","5px");
+
+	// Y axis
+	svg.append("g")
+		.attr("class", "y axis")
+		.call(yAxis);
+
+	svg.append("text")
+	    .attr("class", "label")
+	    .attr("x", margin.left)
+	    .attr("y", -margin.left+30 )
+	    .attr("text-anchor", "end")
+	    .text("GDP");
+
+	// Draw circles
+	svg.selectAll("circle")
+		.data(data)
+		.enter()
+		.append("circle")
+		.attr("cx", xMap)
+		.attr("cy", yMap)
+		.attr("r", 3.5)
+		.attr("fill", function(d){
+		   console.log(zValue(d));
+		   console.log(myColor(zValue(d)));
+		   return myColor(zValue(d));
+		});
+
+	d3.selectAll(".m")
+	   .on("click", function(){
+			var dataSelection = this.getAttribute("value");
+
+			var str;
+			if(dataSelection == "1"){
+				return dataAll[1];
+			} else if (dataSelection == "2"){
+				return dataAll[2];
+			} else if (dataSelection == "3"){
+				return dataAll[3];
+			} else{ 
+				return dataAll[0];
+			}
+	   })
 
 }
 
 Promise.all(requests).then(function(response) {
 
+	// Create data Object
+	var dataScatterplot = {
+	  dataGDP : transformResponseV2(response[2]),    	
+	  dataViolent : transformResponse(response[0]),
+	  dataPregnancies : transformResponse(response[1])
+	};
+	var years = ["2012","2013","2014","2015"]
+		var keys = Object.keys(dataScatterplot);
+		var selectedData = selectData(dataScatterplot, keys, years);
+		var lst = createDataPointList(selectedData);
+		createScatterplot(lst);
 
-// Create data Object
-var dataScatterplot = {
-  dataGDP : transformResponseV2(response[2]),    	
-  dataViolent : transformResponse(response[0]),
-  dataPregnancies : transformResponse(response[1])
-};
-var years = ["2012","2013","2014","2015"]
-	var keys = Object.keys(dataScatterplot);
-	var selectedData = selectData(dataScatterplot, keys, years);
-	var lst = createDataPointList(selectedData);
-	createScatterplot(lst[1]);
-	//console.log(selectedData["2012"][0].Australia.hasOwnProperty("datapointdataPregnancies"));
-
-}).catch(function(e){
-throw(e);
+	}).catch(function(e){
+	throw(e);
 });
