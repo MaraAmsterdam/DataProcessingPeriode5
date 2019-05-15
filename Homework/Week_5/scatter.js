@@ -78,7 +78,6 @@ for (var y = 0; y < years.length; y++){
 	// Iterate datasets
 	for (var j = 1; j < keys.length; j++){
 		var dataset = data[keys[j]];
-		//console.log(dataset);
 
 
 		// Check if countries in initial dataStruct
@@ -147,11 +146,14 @@ function createDataPointList(data){
 	}
 	return lst;
 	}
-function createScatterplot(lst){
+
+
+function createScatterplot(lst, years){
 
 	var dataAll = lst,
 		dataIndex = 0,
-		data = dataAll[dataIndex];
+		data = dataAll[dataIndex],
+		years = years;
 	// Create margins
 	var margin = {top: 30, right: 20, bottom: 30, left: 40},
 		width = 960 - margin.left - margin.right,
@@ -207,7 +209,7 @@ function createScatterplot(lst){
 
 	svg.append("text")
 	    .attr("class", "label")
-	    .attr("x", margin.left)
+	    .attr("x", 10)
 	    .attr("y", -margin.left+30 )
 	    .attr("text-anchor", "end")
 	    .text("GDP");
@@ -223,70 +225,92 @@ function createScatterplot(lst){
 		.attr("fill", function(d){
 		   return myColor(zValue(d));
 		});
+	
+	svg.append("text")
+		.attr("class", "titlegraph")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Relationship between GDP and teen pregnancies per country " + years[dataIndex] );
 
 	d3.selectAll(".m")
 	   .on("click", function(d){
-			var dataSelection = this.getAttribute("value");
+
+			var year = this.getAttribute("value");
 			var data = lst[dataIndex];
 
-			if(dataSelection == "2013"){
+			if(year == "2013"){
 				dataIndex = 1;
-			} else if (dataSelection == "2014"){
+			} else if (year == "2014"){
 				dataIndex = 2;
-			} else if (dataSelection == "2015"){
+			} else if (year == "2015"){
 				dataIndex = 3;
 			} else{ 
 				dataIndex = 0;
 			}
 
+		// Update x
 		var xValue = function(d) {return d[0];},
 		xScale = d3.scaleLinear().range([0, width]),
 		xMap = function(d) {return xScale(xValue(d)); },
 		xAxis = d3.axisBottom(xScale);
 
 
-	// Setup y
-	var yValue = function(d) {return d[1];},
-		yScale = d3.scaleLinear().range([420, 0]),
-		yMap = function(d) {return yScale(yValue(d)) ;},
-		yAxis = d3.axisLeft(yScale);
+		// Update y
+		var yValue = function(d) {return d[1];},
+			yScale = d3.scaleLinear().range([420, 0]),
+			yMap = function(d) {return yScale(yValue(d)) ;},
+			yAxis = d3.axisLeft(yScale);
 
-	// Setup z-scale
-	var zValue = function(d) {return d[2];};
-	var myColor = d3.scaleLinear().domain([0,15])
-	      .range(["white","red"]);
+		// Update z-scale
+		var zValue = function(d) {return d[2];};
+		var myColor = d3.scaleLinear().domain([0,15])
+		      .range(["white","red"]);
 
-	// Set domain of x and y axis
-	xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-	yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+		// Update domain of x and y axis
+		xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+		yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
 
-	// X-axis
-	svg.select("x axis")
-		.transition()
-		.duration(1000)
-		.call(xAxis)
+		// X-axis
+		svg.select("x axis")
+			.transition()
+			.duration(1000)
+			.call(xAxis)
 
-	// Y axis
-	svg.select("y axis")
-		.transition()
-		.duration(1000)
-		.call(yAxis);
+		// Y axis
+		svg.select("y axis")
+			.transition()
+			.duration(1000)
+			.call(yAxis);
 
-	// Draw circles
-	svg.selectAll("circle")
-		.data(data)
-		.transition()
-		.duration(1000)
-		.attr("cx", xMap)
-		.attr("cy", yMap)
-		.attr("r", 3.5)
-		.attr("fill", function(d){
-		   return myColor(zValue(d));
+		// Draw circles
+		svg.selectAll("circle")
+			.data(data)
+			.transition()
+			.duration(1000)
+			.attr("cx", xMap)
+			.attr("cy", yMap)
+			.attr("r", 3.5)
+			.attr("fill", function(d){
+			   return myColor(zValue(d));
+			});
+
+
+		// Update graph title
+		svg.selectAll(".titlegraph")
+			.transition()
+			.duration(1000)
+			.attr("x", (width / 2))             
+	        .attr("y", 0 - (margin.top / 2))
+	        .attr("text-anchor", "middle")  
+	        .style("font-size", "16px") 
+	        .style("text-decoration", "underline")  
+	        .text("Relationship between GDP and teen pregnancies per country " + year);
+
 		});
-
-
-	   });
 
 }
 
@@ -302,7 +326,7 @@ Promise.all(requests).then(function(response) {
 		var keys = Object.keys(dataScatterplot);
 		var selectedData = selectData(dataScatterplot, keys, years);
 		var lst = createDataPointList(selectedData);
-		createScatterplot(lst);
+		createScatterplot(lst, years);
 
 	}).catch(function(e){
 	throw(e);
