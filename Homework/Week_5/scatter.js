@@ -149,8 +149,9 @@ function createDataPointList(data){
 	}
 function createScatterplot(lst){
 
-	var dataAll = lst;
-	var data = lst[0]
+	var dataAll = lst,
+		dataIndex = 0,
+		data = dataAll[dataIndex];
 	// Create margins
 	var margin = {top: 30, right: 20, bottom: 30, left: 40},
 		width = 960 - margin.left - margin.right,
@@ -220,26 +221,72 @@ function createScatterplot(lst){
 		.attr("cy", yMap)
 		.attr("r", 3.5)
 		.attr("fill", function(d){
-		   console.log(zValue(d));
-		   console.log(myColor(zValue(d)));
 		   return myColor(zValue(d));
 		});
 
 	d3.selectAll(".m")
-	   .on("click", function(){
+	   .on("click", function(d){
 			var dataSelection = this.getAttribute("value");
+			var data = lst[dataIndex];
 
-			var str;
-			if(dataSelection == "1"){
-				return dataAll[1];
-			} else if (dataSelection == "2"){
-				return dataAll[2];
-			} else if (dataSelection == "3"){
-				return dataAll[3];
+			if(dataSelection == "2013"){
+				dataIndex = 1;
+			} else if (dataSelection == "2014"){
+				dataIndex = 2;
+			} else if (dataSelection == "2015"){
+				dataIndex = 3;
 			} else{ 
-				return dataAll[0];
+				dataIndex = 0;
 			}
-	   })
+
+		var xValue = function(d) {return d[0];},
+		xScale = d3.scaleLinear().range([0, width]),
+		xMap = function(d) {return xScale(xValue(d)); },
+		xAxis = d3.axisBottom(xScale);
+
+
+	// Setup y
+	var yValue = function(d) {return d[1];},
+		yScale = d3.scaleLinear().range([420, 0]),
+		yMap = function(d) {return yScale(yValue(d)) ;},
+		yAxis = d3.axisLeft(yScale);
+
+	// Setup z-scale
+	var zValue = function(d) {return d[2];};
+	var myColor = d3.scaleLinear().domain([0,15])
+	      .range(["white","red"]);
+
+	// Set domain of x and y axis
+	xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+	yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+
+
+	// X-axis
+	svg.select("x axis")
+		.transition()
+		.duration(1000)
+		.call(xAxis)
+
+	// Y axis
+	svg.select("y axis")
+		.transition()
+		.duration(1000)
+		.call(yAxis);
+
+	// Draw circles
+	svg.selectAll("circle")
+		.data(data)
+		.transition()
+		.duration(1000)
+		.attr("cx", xMap)
+		.attr("cy", yMap)
+		.attr("r", 3.5)
+		.attr("fill", function(d){
+		   return myColor(zValue(d));
+		});
+
+
+	   });
 
 }
 
