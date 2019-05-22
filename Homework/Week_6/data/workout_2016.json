@@ -1,0 +1,164 @@
+[
+    {
+        "workoutfreq": "daily",
+        "happiness": "happy",
+        "health": "physical",
+        "value": 75.3
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "happy",
+        "health": "psychological",
+        "value": 87.4
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "happy",
+        "health": "weight",
+        "value": 76.7
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "neutral",
+        "health": "physical",
+        "value": 18.4
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "neutral",
+        "health": "psychological",
+        "value": 9.6
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "neutral",
+        "health": "weight",
+        "value": 16.4
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "unhappy",
+        "health": "physical",
+        "value": 6.3
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "unhappy",
+        "health": "psychological",
+        "value": 2.9
+    },
+    {
+        "workoutfreq": "daily",
+        "happiness": "unhappy",
+        "health": "weight",
+        "value": 6.9
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "happy",
+        "health": "physical",
+        "value": 75.5
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "happy",
+        "health": "psychological",
+        "value": 87.5
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "happy",
+        "health": "weight",
+        "value": 64.9
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "neutral",
+        "health": "physical",
+        "value": 17.7
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "neutral",
+        "health": "psychological",
+        "value": 8.9
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "neutral",
+        "health": "weight",
+        "value": 23.5
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "unhappy",
+        "health": "physical",
+        "value": 6.8
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "unhappy",
+        "health": "psychological",
+        "value": 3.6
+    },
+    {
+        "workoutfreq": "weekly",
+        "happiness": "unhappy",
+        "health": "weight",
+        "value": 11.6
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "happy",
+        "health": "physical",
+        "value": 61.2
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "happy",
+        "health": "psychological",
+        "value": 80.8
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "happy",
+        "health": "weight",
+        "value": 61.7
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "neutral",
+        "health": "physical",
+        "value": 24.8
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "neutral",
+        "health": "psychological",
+        "value": 13.3
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "neutral",
+        "health": "weight",
+        "value": 24.0
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "unhappy",
+        "health": "physical",
+        "value": 14.1
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "unhappy",
+        "health": "psychological",
+        "value": 5.9
+    },
+    {
+        "workoutfreq": "rarely",
+        "happiness": "unhappy",
+        "health": "weight",
+        "value": 14.4
+    }
+]
