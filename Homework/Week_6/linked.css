@@ -26,3 +26,12 @@
   top: 100%;
   left: 0;
 }
+
+.tooltip {
+    position: absolute;
+    font-size: 12px;
+    width:  auto;
+    height: auto;
+    pointer-events: none;
+    background-color: white;
+}
