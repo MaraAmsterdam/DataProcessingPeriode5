@@ -1,7 +1,10 @@
 window.onload = function() {
 
-
+	filepath = "data/workoutTest.json";
+	var b = false;
+	//connectedScatter(filepath)
 	d3.json("data/workout_2016.json").then(function(data){
+
 
 		var margin = {top : 40, bottom : 60, left : 60, right: 100},
 			height = 500 - margin.bottom - margin.top,
@@ -52,9 +55,7 @@ window.onload = function() {
 							 .entries(data)
 							 .map(function(d){ return d.value; });
 
-		console.log(groupedData);
 		var stackData = stack.keys(keys)(groupedData);
-		//console.log(stackData);
 
 		var tip = d3.tip()
 					 .attr("class", "d3-tip")
@@ -66,8 +67,6 @@ window.onload = function() {
 						proportion =  (thisValue / total).toFixed(2) ;
 
 					return (thisValue + "% of the people who work out " + d.data.workoutfreq + "<br>" + "are " + thisName  +" about their " +  d.data.health + " health");
-					//return (thisName + " about " + d.data.health + " health" +"<br>"+ "workout freq: " + d.data.workoutfreq+"<br>"+proportion);	
-					//return "<strong>Happiness:</strong> <span>" + thisName + "</span>";
 					});
 
 		svg.call(tip);
@@ -82,7 +81,7 @@ window.onload = function() {
 
 
 		serie.selectAll("rect")
-		      .data(function(d) { console.log(d);return d; })
+		      .data(function(d) { return d; })
 		      .enter()
 		      .append("rect")
 		        .attr("class", "serie-rect")
@@ -92,7 +91,19 @@ window.onload = function() {
 				.attr("height", function(d) { return y(d[0]) - y(d[1]); })
 				.attr("width", xScale1.bandwidth())
 				.on("mouseover", tip.show)
-				.on("mouseout", tip.hide); 
+				.on("mouseout", tip.hide)
+				.on("click", function(d){ 
+					if (b == false){
+						connectedScatter(filepath);
+						b = true;}
+					else {
+					b = false;
+					d3.selectAll("#connectedScatter").remove();
+					d3.select("body")
+						.append("div")
+						.attr("id", "connectedScatter");
+					}	
+				;}); 
 
 		svg.append("g")
 		  .attr("class", "axis x")
@@ -100,7 +111,7 @@ window.onload = function() {
 		  .call(d3.axisBottom(xScale))
 		  .append("text")
 		   .attr("x", 200)
-		   .attr("y", 0)
+		   .attr("y", 100)
 		   .attr("dy", "0.32em")
 		   .attr("text-anchor", "end")
 		   .text("Workout frequency");
@@ -109,8 +120,8 @@ window.onload = function() {
 		  .attr("class", "axis y")
 		  .call(d3.axisLeft(y).ticks(10))
 		 .append("text")
-		  .attr("x", 2)
-		  .attr("y", y(y.ticks().pop()) + 0.5)
+		  .attr("x", -10)
+		  .attr("y", y(y.ticks().pop()) - 10)
 		  .attr("dy", "0.32em")
 		  .attr("fill", "#000")
 		  .attr("font-weight", "bold")
@@ -130,7 +141,8 @@ window.onload = function() {
 		      .attr("x", width)
 		      .attr("width", 19)
 		      .attr("height", 19)
-		      .attr("fill", z);
+		      .attr("fill", z)
+
 
 		  legend.append("text")
 		      .attr("x", width - 24)
